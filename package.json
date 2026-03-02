@@ -46,6 +46,6 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/geosolution-app/mapbox-gl-draw-snap-assist"
+    "url": "git+https://github.com/geosolution-apps/mapbox-gl-draw-snap-assist.git"
   }
 }
