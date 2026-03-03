@@ -1,6 +1,6 @@
-import type { SnapAssistOptions, ResolvedSnapOptions } from '../types'
+import type { SnapAssistOptions, ResolvedSnapOptions } from "../types";
 
-const DEFAULT_ALIGN_ANGLES = [0, 45, 90, 135, 180, 225, 270, 315]
+const DEFAULT_ALIGN_ANGLES = [0, 45, 90, 135, 180, 225, 270, 315];
 
 /**
  * Merge user options with defaults to produce fully resolved options.
@@ -16,5 +16,5 @@ export function resolveOptions(opts?: SnapAssistOptions): ResolvedSnapOptions {
     layerIds: opts?.layerIds,
     sourceIds: opts?.sourceIds,
     snapGetFeatures: opts?.snapGetFeatures,
-  }
+  };
 }

@@ -1,11 +1,11 @@
-import type { Position } from 'geojson'
+import type { Position } from "geojson";
 
 /**
  * Coerce a Position (which may have altitude or extra elements)
  * into a strict [lng, lat] tuple that map.project() accepts.
  */
 function toLngLat(coord: Position): [number, number] {
-  return [coord[0], coord[1]]
+  return [coord[0], coord[1]];
 }
 
 /**
@@ -17,22 +17,18 @@ export function isValidCoord(coord: any): coord is Position {
     coord.length >= 2 &&
     Number.isFinite(coord[0]) &&
     Number.isFinite(coord[1])
-  )
+  );
 }
 
 /**
  * Calculate pixel distance between two lng/lat coordinates using map.project().
  */
-export function pixelDistance(
-  map: any,
-  a: Position,
-  b: Position,
-): number {
-  const pa = map.project(toLngLat(a))
-  const pb = map.project(toLngLat(b))
-  const dx = pa.x - pb.x
-  const dy = pa.y - pb.y
-  return Math.sqrt(dx * dx + dy * dy)
+export function pixelDistance(map: any, a: Position, b: Position): number {
+  const pa = map.project(toLngLat(a));
+  const pb = map.project(toLngLat(b));
+  const dx = pa.x - pb.x;
+  const dy = pa.y - pb.y;
+  return Math.sqrt(dx * dx + dy * dy);
 }
 
 /**
@@ -44,24 +40,21 @@ export function bboxFromCursor(
   cursor: Position,
   radiusPx: number,
 ): [[number, number], [number, number]] {
-  const p = map.project(toLngLat(cursor))
+  const p = map.project(toLngLat(cursor));
   return [
     [p.x - radiusPx, p.y - radiusPx],
     [p.x + radiusPx, p.y + radiusPx],
-  ]
+  ];
 }
 
 /**
  * Patch a mapbox-gl-draw event's lngLat with snapped coordinates.
  * Returns a new event-like object (does NOT mutate the original).
  */
-export function patchEvent(
-  e: any,
-  snappedCoord: Position,
-): any {
+export function patchEvent(e: any, snappedCoord: Position): any {
   return Object.assign({}, e, {
     lngLat: { lng: snappedCoord[0], lat: snappedCoord[1] },
-  })
+  });
 }
 
 /**
@@ -69,21 +62,21 @@ export function patchEvent(
  * Handles Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon.
  */
 export function extractVertices(geometry: any): Position[] {
-  if (!geometry || !geometry.type) return []
+  if (!geometry || !geometry.type) return [];
 
   switch (geometry.type) {
-    case 'Point':
-      return [geometry.coordinates as Position]
-    case 'MultiPoint':
-    case 'LineString':
-      return geometry.coordinates as Position[]
-    case 'MultiLineString':
-    case 'Polygon':
-      return (geometry.coordinates as Position[][]).flat()
-    case 'MultiPolygon':
-      return (geometry.coordinates as Position[][][]).flat(2)
+    case "Point":
+      return [geometry.coordinates as Position];
+    case "MultiPoint":
+    case "LineString":
+      return geometry.coordinates as Position[];
+    case "MultiLineString":
+    case "Polygon":
+      return (geometry.coordinates as Position[][]).flat();
+    case "MultiPolygon":
+      return (geometry.coordinates as Position[][][]).flat(2);
     default:
-      return []
+      return [];
   }
 }
 
@@ -91,38 +84,38 @@ export function extractVertices(geometry: any): Position[] {
  * Extract all edge segments [A, B] from a GeoJSON geometry.
  */
 export function extractSegments(geometry: any): [Position, Position][] {
-  if (!geometry || !geometry.type) return []
+  if (!geometry || !geometry.type) return [];
 
-  const segments: [Position, Position][] = []
+  const segments: [Position, Position][] = [];
 
   const addSegmentsFromRing = (ring: Position[]) => {
     for (let i = 0; i < ring.length - 1; i++) {
-      segments.push([ring[i], ring[i + 1]])
+      segments.push([ring[i], ring[i + 1]]);
     }
-  }
+  };
 
   switch (geometry.type) {
-    case 'LineString':
-      addSegmentsFromRing(geometry.coordinates)
-      break
-    case 'MultiLineString':
+    case "LineString":
+      addSegmentsFromRing(geometry.coordinates);
+      break;
+    case "MultiLineString":
       for (const line of geometry.coordinates) {
-        addSegmentsFromRing(line)
+        addSegmentsFromRing(line);
       }
-      break
-    case 'Polygon':
+      break;
+    case "Polygon":
       for (const ring of geometry.coordinates) {
-        addSegmentsFromRing(ring)
+        addSegmentsFromRing(ring);
       }
-      break
-    case 'MultiPolygon':
+      break;
+    case "MultiPolygon":
       for (const polygon of geometry.coordinates) {
         for (const ring of polygon) {
-          addSegmentsFromRing(ring)
+          addSegmentsFromRing(ring);
         }
       }
-      break
+      break;
   }
 
-  return segments
+  return segments;
 }
