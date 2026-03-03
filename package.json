@@ -1,6 +1,6 @@
 {
   "name": "@geosolution-apps/mapbox-gl-draw-snap-assist",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Snap-to-vertex, snap-to-edge, alignment guides, and vertex deletion for @mapbox/mapbox-gl-draw",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
